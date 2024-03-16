@@ -55,19 +55,20 @@ void task_run(void)
 }
 
 void task_print_status(void)
-{   
+{   char buffer[64];
     // bool do_print = false;
     // Serial.printf("now = %d\n", millis());
     for (uint8_t i = 0; i < task_ctrl.active_tasks; i++)
     {
         if (task[i]->prev_state != task[i]->state)
         {
-            Serial.printf("%s: %d -> %d @ %d # %d\n",
+            sprintf(buffer,"%s: %d -> %d @ %d # %d\n",
               task[i]->name, 
               task[i]->prev_state, 
               task[i]->state, 
               millis(),
               task[i]->next_run);
+			Serial.print(buffer);  
         }
     }
 }
