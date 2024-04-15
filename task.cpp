@@ -32,6 +32,13 @@ void task_set_task(uint8_t task_indx, task_st *task_p)
     }
 }
 
+task_st *task_get_task(uint8_t task_indx) 
+{
+    if ( task_indx < TASK_RESERVED_NBR )
+        return &task[task_indx];  
+	else return &undef_task;
+}
+
 void task_delay(uint8_t tindx, uint32_t delay_ms)
 {
   task[tindx]->interval = millis() + delay_ms;

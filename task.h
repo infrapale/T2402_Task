@@ -20,7 +20,9 @@ typedef struct
 
 void task_initialize(uint8_t active_tasks);
 
-void task_set_task(uint8_t task_indx, task_st *task_p) ;
+void task_set_task(uint8_t task_indx, task_st *task_p);
+
+task_st *task_get_task(uint8_t task_indx);
 
 void task_delay(uint8_t tindx, uint32_t delay_ms);
 
