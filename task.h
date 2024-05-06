@@ -1,7 +1,7 @@
 #ifndef __TASK_H__
 #define __TASK_H__
 
-#define TASK_RESERVED_NBR  8
+#define TASK_RESERVED_NBR  16
 
 #include "Arduino.h"
 
@@ -14,6 +14,8 @@ typedef struct
     uint32_t  next_run;
     uint16_t  state;
     uint16_t  prev_state;
+	uint16_t  wd_cntr;
+	uint16_t  wd_limit;
     task_cb   cb;
 } task_st;
 
@@ -28,7 +30,9 @@ void task_delay(uint8_t tindx, uint32_t delay_ms);
 
 void task_run(void);
 
-void task_print_status(void);
+void task_print_status(bool force);
+
+uint8_t task_check_all(void);
 
 
 

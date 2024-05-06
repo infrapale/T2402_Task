@@ -13,7 +13,7 @@ void dummy_task(void)
 
 };
 
-task_st undef_task = {"Undefined      ", 0, 0, 0, 255, dummy_task };
+task_st undef_task = {"Undefined      ", 0, 0, 0, 255, 0, 0, dummy_task };
 
 void task_initialize(uint8_t active_tasks)
 {
@@ -23,6 +23,7 @@ void task_initialize(uint8_t active_tasks)
     }
     task_ctrl.active_tasks = active_tasks;
 }
+
 
 void task_set_task(uint8_t task_indx, task_st *task_p) 
 {
@@ -57,17 +58,18 @@ void task_run(void)
             task[task_indx]->next_run = now_ms + task[task_indx]->interval;
             (*task[task_indx]->cb)();
         }
+		task[task_indx]->wd_cntr++;
     } 
     if (++task_indx >= task_ctrl.active_tasks) task_indx = 0;
 }
 
-void task_print_status(void)
+void task_print_status(bool force)
 {   char buffer[64];
     // bool do_print = false;
     // Serial.printf("now = %d\n", millis());
     for (uint8_t i = 0; i < task_ctrl.active_tasks; i++)
     {
-        if (task[i]->prev_state != task[i]->state)
+        if ((task[i]->prev_state != task[i]->state) || force)
         {
             sprintf(buffer,"%s: %d -> %d @ %d # %d\n",
               task[i]->name, 
@@ -79,4 +81,19 @@ void task_print_status(void)
         }
     }
 }
+
+uint8_t task_check_all(void)
+{
+	uint8_t tindx = 255;
+	for (uint8_t i = 0; i < task_ctrl.active_tasks; i++)
+    {
+        if ((task[i]->wd_limit > 0) && (task[i]->wd_cntr >= task[i]->wd_limit))
+        {
+			tindx = i;
+			break;
+        }
+    }
+	return tindx;
+}
+
 
