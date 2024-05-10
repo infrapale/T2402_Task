@@ -57,8 +57,8 @@ void task_run(void)
             task[task_indx]->prev_state = task[task_indx]->state;
             task[task_indx]->next_run = now_ms + task[task_indx]->interval;
             (*task[task_indx]->cb)();
+			task[task_indx]->wd_cntr++;
         }
-		task[task_indx]->wd_cntr++;
     } 
     if (++task_indx >= task_ctrl.active_tasks) task_indx = 0;
 }
@@ -71,15 +71,22 @@ void task_print_status(bool force)
     {
         if ((task[i]->prev_state != task[i]->state) || force)
         {
-            sprintf(buffer,"%s: %d -> %d @ %d # %d\n",
+            sprintf(buffer,"%s: %d -> %d @ %d # %d %d <? %d\n",
               task[i]->name, 
               task[i]->prev_state, 
               task[i]->state, 
               millis(),
-              task[i]->next_run);
+              task[i]->next_run,
+			  task[i]->wd_cntr,
+			  task[i]->wd_limit);
 			Serial.print(buffer);  
         }
     }
+}
+
+void task_clear_cntr(uint8_t tindx)
+{
+	task[tindx]->wd_cntr = 0;
 }
 
 uint8_t task_check_all(void)

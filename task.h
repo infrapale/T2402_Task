@@ -34,6 +34,7 @@ void task_print_status(bool force);
 
 uint8_t task_check_all(void);
 
+void task_clear_cntr(uint8_t tindx);
 
 
 #endif
